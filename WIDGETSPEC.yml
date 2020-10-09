@@ -1,0 +1,11 @@
+# This section is to be shown to the user in the app catalogue
+[user]
+name: Saynote Demo
+desc: A widget to demonstrate note taking using speech recognition
+
+# This section contains metadata for package management
+[package]
+pkgname: saynote # unique name for package managing
+maintainer: ttay0007@student.monash.edu
+version: 1.0
+
