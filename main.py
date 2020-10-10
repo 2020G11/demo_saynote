@@ -3,23 +3,19 @@ import user.graphic as graphic
 import user.config as config
 import user.speech as speech
 
-speech_client = speech.AudioClient()
-speech_client.encoding = "LINEAR16"
-speech_client.sampleRate = 44100
-speech_client.languageCode = "en_US"
-
-speech_recog = {}
-
 
 def start_listening():
-    speech_recog = speech_client.recognize(0)  # listen indefinitely
-
+    # Could provide `speech.hasClient` or similar to check, or override the previous if called multiple times
+    # Create an audio backend that is managed by the SDK, 
+    #  will find an available audio stream and hook it to the client automatically.
+    speech.startClient()  
 
 def stop_listening():
     backend = config.get("saynote.backend")
 
-    speech_client.terminate()
-    send_note = " ".join(speech_recog["final"])
+    send_note = speech.getNaturalText()
+    speech.stopClient()
+
     fetch(backend + "/setNote?userId=" + remote_user_id, {
         "method": "post",
         "data": { "note": send_note },
