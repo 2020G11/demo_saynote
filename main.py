@@ -4,25 +4,21 @@ import user.config as config
 import user.speech as speech
 
 speech_client = speech.AudioClient()
-speech_client.encoding = "LINEAR16"
-speech_client.sampleRate = 44100
-speech_client.languageCode = "en_US"
-
-speech_recog = {}
 
 
 def start_listening():
-    speech_recog = speech_client.recognize(0)  # listen indefinitely
+    speech_client.startClient(0)  # listen indefinitely
 
 
 def stop_listening():
     backend = config.get("saynote.backend")
 
-    speech_client.terminate()
-    send_note = " ".join(speech_recog["final"])
+    speech_client.stopClient()
+    results = speech_client.getNaturalText().get("final")
+    final_sentence = max(results.items(), key=lambda item:item[1])
     fetch(backend + "/setNote?userId=" + remote_user_id, {
         "method": "post",
-        "data": { "note": send_note },
+        "data": { "note": final_sentence },
     })
 
 """
